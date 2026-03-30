@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { Todo } from '../types.js';
+import { Todo } from '../types';
 
 const router = Router();
 
@@ -27,6 +27,30 @@ router.patch('/:id', (req: Request, res: Response) => {
   if (!todo) return res.status(404).json({ message: '없는 항목' });
 
   todo.done = !todo.done;
+  res.json(todo);
+});
+
+// 텍스트 수정
+router.patch('/:id/title', (req: Request, res: Response) => {
+  const { title } = req.body;
+  if (!title) return res.status(400).json({ message: 'title 필요' });
+
+  const todo = todos.find(t => t.id === Number(req.params.id));
+  if (!todo) return res.status(404).json({ message: '없는 항목' });
+
+  todo.title = title;
+  res.json(todo);
+});
+
+// 완료 상태 수정
+router.patch('/:id/done', (req: Request, res: Response) => {
+  const { done } = req.body;
+  if (typeof done !== 'boolean') return res.status(400).json({ message: 'done은 boolean 필요' });
+
+  const todo = todos.find(t => t.id === Number(req.params.id));
+  if (!todo) return res.status(404).json({ message: '없는 항목' });
+
+  todo.done = done;
   res.json(todo);
 });
 
